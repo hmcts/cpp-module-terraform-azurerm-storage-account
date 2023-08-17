@@ -45,3 +45,109 @@ variable "type" {
   description = "Name of service type"
   default     = ""
 }
+
+variable "storage_account_name" {
+  description = "The name of the storage account. Changing this forces a new resource to be created."
+  type        = string
+  default     = null
+  validation {
+    condition     = length(var.storage_account_name) >= 3 && substr(var.storage_account_name, 0, 2) == "sa"
+    error_message = "The storage account name should start with 'sa' and be at least 3 characters long."
+  }
+}
+
+variable "resource_group_name" {
+  description = "The name of the resource group in which to create the storage account. Changing this forces a new resource to be created."
+  type        = string
+}
+
+variable "account_kind" {
+  description = "Specifies the kind of storage account. Valid options are Storage, StorageV2, BlobStorage, FileStorage, BlockBlobStorage. Changing this forces a new resource to be created."
+  type        = string
+  default     = "StorageV2"
+}
+
+variable "account_tier" {
+  description = "Specifies the Tier to use for this storage account. Valid options are Standard and Premium. Changing this forces a new resource to be created."
+  type        = string
+  default     = "Standard"
+}
+
+variable "replication_type" {
+  description = "Specifies what replication applies to this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS, RAGZRS. Changing this forces a new resource to be created."
+  type        = string
+  default     = "LRS"
+}
+
+variable "access_tier" {
+  description = "Specifies the access tier for BlobStorage and StorageV2 accounts. Valid options are Hot and Cool. Changing this forces a new resource to be created."
+  type        = string
+  default     = "Hot"
+}
+
+variable "tags" {
+  description = "A mapping of tags to assign to the resource."
+  type        = map(string)
+  default     = {}
+}
+
+variable "enable_hns" {
+  description = "Is Hierarchical Namespace enabled for this storage account?"
+  type        = bool
+  default     = false
+}
+
+variable "enable_sftp" {
+  description = "Is SFTP enabled for this storage account?"
+  type        = bool
+  default     = false
+}
+
+variable "enable_large_file_share" {
+  description = "Is Large File Share enabled for this storage account?"
+  type        = bool
+  default     = false
+}
+
+variable "nfsv3_enabled" {
+  description = "Is NFSv3 protocol enabled for this storage account?"
+  type        = bool
+  default     = false
+}
+
+variable "infrastructure_encryption_enabled" {
+  description = "Is infrastructure encryption enabled for this storage account?"
+  type        = bool
+  default     = false
+}
+
+variable "shared_access_key_enabled" {
+  description = "Is shared access key enabled for this storage account?"
+  type        = bool
+  default     = true
+}
+
+variable "allowed_subnet_ids" {
+  description = "List of subnet IDs allowed to access the storage account."
+  type        = list(string)
+  default     = []
+}
+
+variable "private_link_access" {
+  description = <<-EOF
+  Map of resource IDs of the private endpoints to connect to the storage account.
+  {
+    [private_endpoint_id] = {
+      endpoint_resource_id = [resource_id]
+      endpoint_tenant_id  = (optional) [tenant_id]
+    }
+  }
+EOF
+
+  type = map(object({
+    endpoint_resource_id = string
+    endpoint_tenant_id   = optional(string)
+  }))
+
+  default = {}
+}
