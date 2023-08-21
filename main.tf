@@ -50,27 +50,27 @@ resource "azurerm_storage_account" "main" {
 }
 
 resource "azurerm_storage_container" "container" {
-  count                 = length(var.containers_list) < 1 ? 0 : 1
+  count                 = var.containers_list == null ? 0 : length(var.containers_list)
   name                  = var.containers_list[count.index].name
   storage_account_name  = azurerm_storage_account.main.name
   container_access_type = var.containers_list[count.index].access_type
 }
 
 resource "azurerm_storage_share" "fileshare" {
-  count                = length(var.file_shares) < 1 ? 0 : 1
+  count                = var.file_shares == null ? 0 : length(var.file_shares)
   name                 = var.file_shares[count.index].name
   storage_account_name = azurerm_storage_account.main.name
   quota                = var.file_shares[count.index].quota
 }
 
 resource "azurerm_storage_table" "tables" {
-  count                = length(var.tables) < 1 ? 0 : 1
+  count                = var.tables == null ? 0 : length(var.tables)
   name                 = var.tables[count.index]
   storage_account_name = azurerm_storage_account.main.name
 }
 
 resource "azurerm_storage_queue" "queues" {
-  count                = length(var.queues) < 1 ? 0 : 1
+  count                = var.queues == null ? 0 : length(var.queues)
   name                 = var.queues[count.index]
   storage_account_name = azurerm_storage_account.main.name
 }
