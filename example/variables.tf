@@ -93,3 +93,15 @@ variable "private_endpoint_connection_name" {
   type    = string
   default = ""
 }
+
+variable "blob_soft_delete_retention_days" {
+  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`"
+  default     = 7
+  type        = number
+}
+
+variable "container_soft_delete_retention_days" {
+  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`"
+  default     = 7
+  type        = number
+}

@@ -81,6 +81,16 @@ module "storage_account" {
   storage_account_name = var.storage_account_name
   resource_group_name  = azurerm_resource_group.test.name
 
+  blob_properties {
+    delete_retention_policy {
+      days = var.blob_soft_delete_retention_days
+    }
+    container_delete_retention_policy {
+      days = var.container_soft_delete_retention_days
+    }
+
+  }
+
   private_link_access = {
     private_endpoint_1 = {
       endpoint_resource_id = azurerm_private_endpoint.test.id
