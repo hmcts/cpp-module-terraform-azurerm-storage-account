@@ -55,6 +55,7 @@ variable "version_number" {
 variable "resource_group_name" {
   description = "The name of the resource group in which to create the storage account. Changing this forces a new resource to be created."
   type        = string
+  default     = "rg-lab-cpp-saterratest"
 }
 
 variable "tags" {
