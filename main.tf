@@ -21,6 +21,18 @@ resource "azurerm_storage_account" "main" {
     type = "SystemAssigned"
   }
 
+  blob_properties {
+    delete_retention_policy {
+      days = var.blob_soft_delete_retention_days
+    }
+    container_delete_retention_policy {
+      days = var.container_soft_delete_retention_days
+    }
+    versioning_enabled       = var.enable_versioning
+    last_access_time_enabled = var.last_access_time_enabled
+    change_feed_enabled      = var.change_feed_enabled
+  }
+
   network_rules {
     default_action             = "Deny"
     virtual_network_subnet_ids = var.allowed_subnet_ids
@@ -35,4 +47,30 @@ resource "azurerm_storage_account" "main" {
       }
     }
   }
+}
+
+resource "azurerm_storage_container" "container" {
+  count                 = length(var.containers_list) < 1 ? 0 : 1
+  name                  = var.containers_list[count.index].name
+  storage_account_name  = azurerm_storage_account.main.name
+  container_access_type = var.containers_list[count.index].access_type
+}
+
+resource "azurerm_storage_share" "fileshare" {
+  count                = length(var.file_shares) < 1 ? 0 : 1
+  name                 = var.file_shares[count.index].name
+  storage_account_name = azurerm_storage_account.main.name
+  quota                = var.file_shares[count.index].quota
+}
+
+resource "azurerm_storage_table" "tables" {
+  count                = length(var.tables) < 1 ? 0 : 1
+  name                 = var.tables[count.index]
+  storage_account_name = azurerm_storage_account.main.name
+}
+
+resource "azurerm_storage_queue" "queues" {
+  count                = length(var.queues) < 1 ? 0 : 1
+  name                 = var.queues[count.index]
+  storage_account_name = azurerm_storage_account.main.name
 }

@@ -151,3 +151,55 @@ EOF
 
   default = {}
 }
+
+variable "blob_soft_delete_retention_days" {
+  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`"
+  default     = 7
+  type        = number
+}
+
+variable "container_soft_delete_retention_days" {
+  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`"
+  default     = 7
+  type        = number
+}
+
+variable "enable_versioning" {
+  description = "Is versioning enabled? Default to `false`"
+  default     = false
+  type        = bool
+}
+variable "last_access_time_enabled" {
+  description = "Is the last access time based tracking enabled? Default to `false`"
+  default     = false
+  type        = bool
+}
+variable "change_feed_enabled" {
+  description = "Is the blob service properties for change feed events enabled?"
+  default     = false
+  type        = bool
+}
+
+variable "containers_list" {
+  description = "List of containers to create and their access levels."
+  type        = list(object({ name = string, access_type = string }))
+  default     = []
+}
+
+variable "file_shares" {
+  description = "List of containers to create and their access levels."
+  type        = list(object({ name = string, quota = number }))
+  default     = []
+}
+
+variable "queues" {
+  description = "List of storages queues"
+  type        = list(string)
+  default     = []
+}
+
+variable "tables" {
+  description = "List of storage tables."
+  type        = list(string)
+  default     = []
+}
