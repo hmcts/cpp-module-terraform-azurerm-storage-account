@@ -77,19 +77,12 @@ resource "azurerm_private_endpoint" "test" {
 }
 
 module "storage_account" {
-  source               = "../"
-  storage_account_name = var.storage_account_name
-  resource_group_name  = azurerm_resource_group.test.name
+  source                               = "../"
+  storage_account_name                 = var.storage_account_name
+  resource_group_name                  = azurerm_resource_group.test.name
+  blob_soft_delete_retention_days      = var.blob_soft_delete_retention_days
+  container_soft_delete_retention_days = var.container_soft_delete_retention_days
 
-  blob_properties {
-    delete_retention_policy {
-      days = var.blob_soft_delete_retention_days
-    }
-    container_delete_retention_policy {
-      days = var.container_soft_delete_retention_days
-    }
-
-  }
 
   private_link_access = {
     private_endpoint_1 = {
