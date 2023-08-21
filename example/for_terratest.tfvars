@@ -1,5 +1,5 @@
 resource_group_name              = "rg-lab-cpp-saterratest"
-storage_account_name             = "salabcppsaterratest1"
+storage_account_name             = "salabcppsaterratest"
 private_link_service_name        = "pls-lab-cpp-saterratest"
 private_endpoint_name            = "pe-lab-cpp-saterratest"
 private_endpoint_connection_name = "pec-lab-cpp-saterratest"
