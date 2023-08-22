@@ -39,7 +39,7 @@ resource "azurerm_storage_account" "main" {
     bypass                     = ["None"]
 
     dynamic "private_link_access" {
-      for_each = var.private_link_access
+      for_each = var.private_link_access == null ? {} : var.private_link_access
 
       content {
         endpoint_resource_id = lookup(private_link_access.value, "endpoint_resource_id")
