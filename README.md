@@ -7,7 +7,7 @@ This terraform module creates a storage account with or without public access di
 It needs below resources to be available
 1) Private dns for blob, file and other data storage for a storage account
 2) Subnet for creating private endpoint
-3) Containers, queues and other data storage can also be created via this module 
+3) Containers, queues and other data storage can also be created via this module
 ## Example for storage account with public access disabled
 
 ```hcl
