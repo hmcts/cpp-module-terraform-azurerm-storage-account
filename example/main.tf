@@ -77,7 +77,7 @@ resource "azurerm_private_endpoint" "test" {
 
   private_service_connection {
     name                           = var.private_endpoint_connection_name
-    private_connection_resource_id = azurerm_private_link_service.test.id
+    private_connection_resource_id = module.storage_account.storage_account_id
     subresource_names              = ["blob"]
     is_manual_connection           = false
   }
