@@ -223,6 +223,3 @@ variable "subnet_sa" {
   type        = string
   default     = ""
 }
-
-
-
