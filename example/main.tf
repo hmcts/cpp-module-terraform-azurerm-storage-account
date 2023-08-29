@@ -62,11 +62,12 @@ resource "azurerm_private_link_service" "test" {
   }
 }
 
-resource "azurerm_private_dns_zone" "sa_blob" {
-  name                = "privatelink.blob.core.windows.net"
-  resource_group_name = azurerm_resource_group.test.name
+#resource "azurerm_private_dns_zone" "sa_blob" {
+#  name                = "privatelink.blob.core.windows.net"
+#  resource_group_name = azurerm_resource_group.test.name
+#
+#}
 
-}
 
 
 resource "azurerm_private_endpoint" "test" {
@@ -77,13 +78,8 @@ resource "azurerm_private_endpoint" "test" {
 
   private_service_connection {
     name                           = var.private_endpoint_connection_name
-    private_connection_resource_id = module.storage_account.storage_account_id
-    subresource_names              = ["blob"]
+    private_connection_resource_id = azurerm_private_link_service.test.id
     is_manual_connection           = false
-  }
-  private_dns_zone_group {
-    name                 = "dns-zone-group-sa"
-    private_dns_zone_ids = [azurerm_private_dns_zone.sa_blob.id]
   }
   tags = module.tag_set.tags
 }
