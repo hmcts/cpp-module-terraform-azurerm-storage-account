@@ -33,31 +33,25 @@ resource "azurerm_storage_account" "main" {
     last_access_time_enabled = var.last_access_time_enabled
     change_feed_enabled      = var.change_feed_enabled
   }
-
-  #  network_rules {
-  #    default_action             = "Deny"
-  #    virtual_network_subnet_ids = var.allowed_subnet_ids
-  #    bypass                     = ["None"]
-  #
-  #    dynamic "private_link_access" {
-  #     for_each = var.public_network_access_enabled !=null ? ["sa"] : []
-  #
-  #      content {
-  #        endpoint_resource_id = azurerm_private_endpoint.test[0].id
-  #
-  ##        endpoint_resource_id = lookup(private_link_access.value, "endpoint_resource_id")
-  ##        endpoint_tenant_id   = lookup(private_link_access.value, "endpoint_tenant_id", null)
-  #      }
-  #    }
-  #  }
 }
 
 
+data "azurerm_private_dns_zone" "sa_blob" {
+  name                = "privatelink.blob.core.windows.net"
+  resource_group_name = "RG-MDV-INT-01"
+
+}
+
+data "azurerm_private_dns_zone" "sa_file" {
+  name                = "privatelink.file.core.windows.net"
+  resource_group_name = "RG-MDV-INT-01"
+
+}
 
 
-resource "azurerm_private_endpoint" "test" {
-  for_each            = { for k, v in var.resources : k => v if var.public_network_access_enabled != null }
-  name                = format("%s-%s", lookup(each.value, "resource_name"), lookup(each.value, "resource_type"))
+resource "azurerm_private_endpoint" "endpoint_blob" {
+  count               = var.public_network_access_enabled == null ? 0 : 1
+  name                = var.private_endpoint_name
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.subnet_sa
@@ -65,12 +59,32 @@ resource "azurerm_private_endpoint" "test" {
   private_service_connection {
     name                           = var.private_endpoint_connection_name
     private_connection_resource_id = azurerm_storage_account.main.id
-    subresource_names              = [lookup(each.value, "resource_type")]
+    subresource_names              = ["blob"]
     is_manual_connection           = false
   }
   private_dns_zone_group {
     name                 = "dns-zone-group-sa"
-    private_dns_zone_ids = [lookup(each.value, "private_dns_zone_id")]
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_blob.id]
+  }
+  tags = var.tags
+}
+
+resource "azurerm_private_endpoint" "endpoint_file" {
+  count               = var.public_network_access_enabled == null ? 0 : 1
+  name                = var.private_endpoint_name
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = var.subnet_sa
+
+  private_service_connection {
+    name                           = var.private_endpoint_connection_name
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["file"]
+    is_manual_connection           = false
+  }
+  private_dns_zone_group {
+    name                 = "dns-zone-group-sa"
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_file.id]
   }
   tags = var.tags
 }
@@ -108,15 +122,10 @@ resource "azurerm_storage_account_network_rules" "netrules" {
   virtual_network_subnet_ids = [var.subnet_sa]
   bypass                     = ["AzureServices"]
 
-  dynamic "private_link_access" {
-    for_each = azurerm_private_endpoint.test
-
-    content {
-      endpoint_resource_id = private_link_access.value.id
-
-      #        endpoint_resource_id = lookup(private_link_access.value, "endpoint_resource_id")
-      #        endpoint_tenant_id   = lookup(private_link_access.value, "endpoint_tenant_id", null)
-    }
+  private_link_access {
+    endpoint_resource_id = azurerm_private_endpoint.endpoint_file[0].id
   }
-
+  private_link_access {
+    endpoint_resource_id = azurerm_private_endpoint.endpoint_blob[0].id
+  }
 }

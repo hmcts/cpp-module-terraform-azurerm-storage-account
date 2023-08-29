@@ -221,11 +221,11 @@ variable "private_link_service_name" {
   default     = "test-sa"
 }
 
-#variable "private_endpoint_name" {
-#  description = "Endpoint name."
-#  type        = string
-#  default = "pvt-sa-test"
-#}
+variable "private_endpoint_name" {
+  description = "Endpoint name."
+  type        = string
+  default     = "pvt-sa-test"
+}
 
 variable "private_endpoint_connection_name" {
   description = "Endpoint connection name."
@@ -252,12 +252,12 @@ variable "subnet_sa" {
 #  })
 #}
 
-variable "resources" {
-  type = map(object({
-    resource_name       = string
-    resource_type       = string
-    private_dns_zone_id = string
-  }))
-  description = "resources"
-  default     = {}
-}
+#variable "resources" {
+#  type = map(object({
+#    resource_name       = string
+#    resource_type       = string
+#    private_dns_zone_id = string
+#  }))
+#  description = "resources"
+#  default     = {}
+#}
