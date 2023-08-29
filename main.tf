@@ -51,7 +51,7 @@ data "azurerm_private_dns_zone" "sa_file" {
 
 resource "azurerm_private_endpoint" "endpoint_blob" {
   count               = var.public_network_access_enabled == null ? 0 : 1
-  name                = var.private_endpoint_name
+  name                = "blob-pvt-sa"
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.subnet_sa
@@ -71,7 +71,7 @@ resource "azurerm_private_endpoint" "endpoint_blob" {
 
 resource "azurerm_private_endpoint" "endpoint_file" {
   count               = var.public_network_access_enabled == null ? 0 : 1
-  name                = var.private_endpoint_name
+  name                = "file-pvt-sa"
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.subnet_sa
