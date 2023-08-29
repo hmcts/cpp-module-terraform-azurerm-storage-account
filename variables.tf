@@ -226,5 +226,5 @@ variable "subnet_sa" {
 
 variable "enable_data_lookup" {
   type    = bool
-  default = true
+  default = false
 }
