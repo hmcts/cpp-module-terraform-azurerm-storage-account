@@ -117,7 +117,7 @@ resource "azurerm_storage_queue" "queues" {
 }
 
 resource "azurerm_storage_account_network_rules" "netrules" {
-  count               = var.public_network_access_enabled == null ? 0 : 1
+  count                      = var.public_network_access_enabled == null ? 0 : 1
   storage_account_id         = azurerm_storage_account.main.id
   default_action             = "Deny"
   virtual_network_subnet_ids = [var.subnet_sa]
