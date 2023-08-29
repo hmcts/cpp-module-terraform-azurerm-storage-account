@@ -106,3 +106,8 @@ variable "container_soft_delete_retention_days" {
   default     = 7
   type        = number
 }
+
+variable "enable_data_lookup" {
+  type    = string
+  default = ""
+}
