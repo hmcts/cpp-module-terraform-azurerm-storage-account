@@ -37,14 +37,14 @@ resource "azurerm_storage_account" "main" {
 
 
 data "azurerm_private_dns_zone" "sa_blob" {
-  count               = var.public_network_access_enabled == null ? 0 : 1
+  count               = var.public_network_access_enabled ? 0 : 1
   name                = "privatelink.blob.core.windows.net"
   resource_group_name = "RG-MDV-INT-01"
 
 }
 
 data "azurerm_private_dns_zone" "sa_file" {
-  count               = var.public_network_access_enabled == null ? 0 : 1
+  count               = var.public_network_access_enabled ? 0 : 1
   name                = "privatelink.file.core.windows.net"
   resource_group_name = "RG-MDV-INT-01"
 
@@ -52,7 +52,7 @@ data "azurerm_private_dns_zone" "sa_file" {
 
 
 resource "azurerm_private_endpoint" "endpoint_blob" {
-  count               = var.public_network_access_enabled == null ? 0 : 1
+  count               = var.public_network_access_enabled ? 0 : 1
   name                = "${var.storage_account_name}-blob-pvt"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -72,7 +72,7 @@ resource "azurerm_private_endpoint" "endpoint_blob" {
 }
 
 resource "azurerm_private_endpoint" "endpoint_file" {
-  count               = var.public_network_access_enabled == null ? 0 : 1
+  count               = var.public_network_access_enabled ? 0 : 1
   name                = "${var.storage_account_name}-file-pvt"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -119,7 +119,7 @@ resource "azurerm_storage_queue" "queues" {
 }
 
 resource "azurerm_storage_account_network_rules" "netrules" {
-  count                      = var.public_network_access_enabled == null ? 0 : 1
+  count                      = var.public_network_access_enabled ? 0 : 1
   storage_account_id         = azurerm_storage_account.main.id
   default_action             = "Deny"
   virtual_network_subnet_ids = [var.subnet_sa]
