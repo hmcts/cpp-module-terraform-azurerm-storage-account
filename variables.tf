@@ -223,3 +223,8 @@ variable "subnet_sa" {
   type        = string
   default     = ""
 }
+
+#variable "enable_data_lookup" {
+#  type    = string
+#  default = "true"
+#}

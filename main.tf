@@ -37,12 +37,14 @@ resource "azurerm_storage_account" "main" {
 
 
 data "azurerm_private_dns_zone" "sa_blob" {
+  #  count               = var.enable_data_lookup ? 1 : 0
   name                = "privatelink.blob.core.windows.net"
   resource_group_name = "RG-MDV-INT-01"
 
 }
 
 data "azurerm_private_dns_zone" "sa_file" {
+  #  count               = var.enable_data_lookup ? 1 : 0
   name                = "privatelink.file.core.windows.net"
   resource_group_name = "RG-MDV-INT-01"
 
