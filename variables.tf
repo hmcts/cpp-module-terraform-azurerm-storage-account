@@ -210,22 +210,6 @@ variable "public_network_access_enabled" {
   type        = bool
 }
 
-#variable "subnet_id" {
-#  description = "Subnetid."
-#  type        = string
-#}
-
-variable "private_link_service_name" {
-  description = "Service name."
-  type        = string
-  default     = "test-sa"
-}
-
-variable "private_endpoint_name" {
-  description = "Endpoint name."
-  type        = string
-  default     = "pvt-sa-test"
-}
 
 variable "private_endpoint_connection_name" {
   description = "Endpoint connection name."
@@ -233,11 +217,6 @@ variable "private_endpoint_connection_name" {
   default     = "pvt-sa-test-conn"
 }
 
-variable "private_dns_zone" {
-  description = "List of private dns zone"
-  type        = list(string)
-  default     = []
-}
 
 variable "subnet_sa" {
   description = "Subnet for storage account"
@@ -245,19 +224,5 @@ variable "subnet_sa" {
   default     = ""
 }
 
-#variable private_dns_zone_sa {
-#  type = object({
-#    name = list(string)
-#    resource_group = string
-#  })
-#}
 
-#variable "resources" {
-#  type = map(object({
-#    resource_name       = string
-#    resource_type       = string
-#    private_dns_zone_id = string
-#  }))
-#  description = "resources"
-#  default     = {}
-#}
+

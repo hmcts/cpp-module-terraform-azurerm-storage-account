@@ -62,6 +62,12 @@ resource "azurerm_private_link_service" "test" {
   }
 }
 
+resource "azurerm_private_dns_zone" "sa_blob" {
+  name                = "privatelink.blob.core.windows.net"
+  resource_group_name = azurerm_resource_group.test.name
+
+}
+
 resource "azurerm_private_endpoint" "test" {
   name                = var.private_endpoint_name
   location            = var.location
