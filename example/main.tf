@@ -62,9 +62,21 @@ resource "azurerm_private_link_service" "test" {
   }
 }
 
-resource "azurerm_private_dns_zone" "sa_blob" {
+#resource "azurerm_private_dns_zone" "sa_blob" {
+#  name                = "privatelink.blob.core.windows.net"
+#  resource_group_name = azurerm_resource_group.test.name
+#
+#}
+
+data "azurerm_private_dns_zone" "sa_blob" {
   name                = "privatelink.blob.core.windows.net"
-  resource_group_name = azurerm_resource_group.test.name
+  resource_group_name = "RG-MDV-INT-01"
+
+}
+
+data "azurerm_private_dns_zone" "sa_file" {
+  name                = "privatelink.file.core.windows.net"
+  resource_group_name = "RG-MDV-INT-01"
 
 }
 
