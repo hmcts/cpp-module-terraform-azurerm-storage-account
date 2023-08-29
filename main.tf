@@ -37,14 +37,14 @@ resource "azurerm_storage_account" "main" {
 
 
 data "azurerm_private_dns_zone" "sa_blob" {
-  #  count               = var.enable_data_lookup ? 1 : 0
+  count               = var.enable_data_lookup ? 1 : 0
   name                = "privatelink.blob.core.windows.net"
   resource_group_name = "RG-MDV-INT-01"
 
 }
 
 data "azurerm_private_dns_zone" "sa_file" {
-  #  count               = var.enable_data_lookup ? 1 : 0
+  count               = var.enable_data_lookup ? 1 : 0
   name                = "privatelink.file.core.windows.net"
   resource_group_name = "RG-MDV-INT-01"
 
@@ -66,7 +66,7 @@ resource "azurerm_private_endpoint" "endpoint_blob" {
   }
   private_dns_zone_group {
     name                 = "dns-zone-group-sa"
-    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_blob.id]
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_blob[0].id]
   }
   tags = var.tags
 }
@@ -86,7 +86,7 @@ resource "azurerm_private_endpoint" "endpoint_file" {
   }
   private_dns_zone_group {
     name                 = "dns-zone-group-sa"
-    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_file.id]
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_file[0].id]
   }
   tags = var.tags
 }

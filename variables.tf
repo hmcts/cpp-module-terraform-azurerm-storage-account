@@ -224,7 +224,7 @@ variable "subnet_sa" {
   default     = ""
 }
 
-#variable "enable_data_lookup" {
-#  type    = string
-#  default = "true"
-#}
+variable "enable_data_lookup" {
+  type    = bool
+  default = true
+}

@@ -13,4 +13,5 @@ owner              = "EI"
 environment        = "nonlive"
 application        = "test"
 type               = "storageaccount"
-enable_data_lookup = "false"
+enable_data_lookup = false
+
