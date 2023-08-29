@@ -69,14 +69,14 @@ resource "azurerm_private_link_service" "test" {
 #}
 
 data "azurerm_private_dns_zone" "sa_blob" {
-  count               = var.enable_data_lookup ? 1 : 0
+  count               = var.public_network_access_enabled ? 0 : 1
   name                = "privatelink.blob.core.windows.net"
   resource_group_name = "RG-MDV-INT-01"
 
 }
 
 data "azurerm_private_dns_zone" "sa_file" {
-  count               = var.enable_data_lookup ? 1 : 0
+  count               = var.public_network_access_enabled ? 0 : 1
   name                = "privatelink.file.core.windows.net"
   resource_group_name = "RG-MDV-INT-01"
 
@@ -102,6 +102,7 @@ module "storage_account" {
   resource_group_name                  = azurerm_resource_group.test.name
   blob_soft_delete_retention_days      = var.blob_soft_delete_retention_days
   container_soft_delete_retention_days = var.container_soft_delete_retention_days
+  public_network_access_enabled        = var.public_network_access_enabled
 
 
   private_link_access = {

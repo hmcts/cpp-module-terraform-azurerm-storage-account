@@ -107,6 +107,8 @@ variable "container_soft_delete_retention_days" {
   type        = number
 }
 
-variable "enable_data_lookup" {
-  type = bool
+
+variable "public_network_access_enabled" {
+  description = "Whether the public network access is enabled"
+  type        = bool
 }

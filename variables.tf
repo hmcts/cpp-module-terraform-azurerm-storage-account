@@ -206,7 +206,6 @@ variable "tables" {
 
 variable "public_network_access_enabled" {
   description = "Whether the public network access is enabled"
-  default     = false
   type        = bool
 }
 
