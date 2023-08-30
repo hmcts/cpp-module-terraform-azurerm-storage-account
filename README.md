@@ -3,13 +3,54 @@
 <!-- TODO fill in resource name in link to product documentation -->
 Terraform module for [Resource name](https://example.com).
 
-## Example
+This terraform module creates a storage account with or without public access disabled.
+It needs below resources to be available
+1) Private dns for blob, file and other data storage for a storage account
+2) Subnet for creating private endpoint
+3) Containers, queues and other data storage can also be created via this module
+## Example for storage account with public access disabled
 
-<!-- todo update module name
 ```hcl
-module "todo_resource_name" {
-  source = "git@github.com:hmcts/terraform-module-postgresql-flexible?ref=master"
-  ...
+
+
+module "storage_account" {
+  source = "git@github.com:hmcts/cpp-module-terraform-azurerm-storage-account?ref=main"
+  storage_account_name                 = "storage_account1"
+  resource_group_name                  = "resource-group"
+  blob_soft_delete_retention_days      = "8"
+  container_soft_delete_retention_days = "8"
+  public_network_access_enabled = "false"
+
+}
+
+resource "azurerm_private_endpoint" "endpoint" {
+  name                = "storage_account1-file-pvt"
+  location            = "uksouth"
+  resource_group_name = "resource_group"
+  subnet_id           = "Subnet"
+
+  private_service_connection {
+    name                           = ""
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["blob"]
+    is_manual_connection           = false
+  }
+  private_dns_zone_group {
+    name                 = "dns-zone-group-sa"
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_blob[0].id]
+  }
+  tags = var.tags
+}
+resource "azurerm_storage_account_network_rules" "netrules" {
+  count                      = var.public_network_access_enabled == null ? 0 : 1
+  storage_account_id         = azurerm_storage_account.main.id
+  default_action             = "Deny"
+  virtual_network_subnet_ids = [var.subnet_sa]
+  bypass                     = ["AzureServices"]
+
+  private_link_access {
+    endpoint_resource_id = azurerm_private_endpoint.endpoint_blob[0].id
+  }
 }
 
 ```

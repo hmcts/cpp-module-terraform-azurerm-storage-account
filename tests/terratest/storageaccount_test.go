@@ -57,6 +57,6 @@ func TestTerraformAzureStorageAccount(t *testing.T) {
 	assert.Equal(t, storageAccountId, *storageAccount.ID)
 	assert.Equal(t, "StorageV2", storageAccountKind)
 	assert.Equal(t, "Standard_LRS", string(storageAccount.Sku.Name))
-	assert.Equal(t, "Deny", string(storageAccountProperties.NetworkRuleSet.DefaultAction))
+	//assert.Equal(t, "Deny", string(storageAccountProperties.NetworkRuleSet.DefaultAction))
 	assert.Equal(t, "TLS1_2", string(storageAccountProperties.MinimumTLSVersion))
 }

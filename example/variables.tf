@@ -55,6 +55,7 @@ variable "version_number" {
 variable "resource_group_name" {
   description = "The name of the resource group in which to create the storage account. Changing this forces a new resource to be created."
   type        = string
+  default     = "rg-lab-cpp-saterratest"
 }
 
 variable "tags" {
@@ -92,4 +93,27 @@ variable "private_endpoint_name" {
 variable "private_endpoint_connection_name" {
   type    = string
   default = ""
+}
+
+variable "blob_soft_delete_retention_days" {
+  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`"
+  default     = 7
+  type        = number
+}
+
+variable "container_soft_delete_retention_days" {
+  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`"
+  default     = 7
+  type        = number
+}
+
+
+variable "public_network_access_enabled" {
+  description = "Whether the public network access is enabled"
+  type        = bool
+}
+
+variable "enable_data_lookup" {
+  type    = bool
+  default = false
 }

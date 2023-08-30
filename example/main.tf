@@ -62,6 +62,14 @@ resource "azurerm_private_link_service" "test" {
   }
 }
 
+#resource "azurerm_private_dns_zone" "sa_blob" {
+#  name                = "privatelink.blob.core.windows.net"
+#  resource_group_name = azurerm_resource_group.test.name
+#
+#}
+
+
+
 resource "azurerm_private_endpoint" "test" {
   name                = var.private_endpoint_name
   location            = var.location
@@ -77,9 +85,13 @@ resource "azurerm_private_endpoint" "test" {
 }
 
 module "storage_account" {
-  source               = "../"
-  storage_account_name = var.storage_account_name
-  resource_group_name  = azurerm_resource_group.test.name
+  source                               = "../"
+  storage_account_name                 = var.storage_account_name
+  resource_group_name                  = azurerm_resource_group.test.name
+  blob_soft_delete_retention_days      = var.blob_soft_delete_retention_days
+  container_soft_delete_retention_days = var.container_soft_delete_retention_days
+  public_network_access_enabled        = var.public_network_access_enabled
+
 
   private_link_access = {
     private_endpoint_1 = {
