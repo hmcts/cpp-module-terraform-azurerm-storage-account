@@ -118,6 +118,7 @@ resource "azurerm_storage_queue" "queues" {
   storage_account_name = azurerm_storage_account.main.name
 }
 
+/* This is already applied with azurerm_storage_account
 resource "azurerm_storage_account_network_rules" "netrules" {
   count                      = var.public_network_access_enabled ? 0 : 1
   storage_account_id         = azurerm_storage_account.main.id
@@ -125,13 +126,5 @@ resource "azurerm_storage_account_network_rules" "netrules" {
   virtual_network_subnet_ids = [var.subnet_sa]
   bypass                     = ["AzureServices"]
 
-  /* This is already applied with azurerm_storage_account
-  private_link_access {
-    endpoint_resource_id = azurerm_private_endpoint.endpoint_file[0].id
-  }
-  private_link_access {
-    endpoint_resource_id = azurerm_private_endpoint.endpoint_blob[0].id
-  }
-  */
-
 }
+*/
