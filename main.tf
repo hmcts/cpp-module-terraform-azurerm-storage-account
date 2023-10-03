@@ -125,10 +125,13 @@ resource "azurerm_storage_account_network_rules" "netrules" {
   virtual_network_subnet_ids = [var.subnet_sa]
   bypass                     = ["AzureServices"]
 
+  /* This is already applied with azurerm_storage_account
   private_link_access {
     endpoint_resource_id = azurerm_private_endpoint.endpoint_file[0].id
   }
   private_link_access {
     endpoint_resource_id = azurerm_private_endpoint.endpoint_blob[0].id
   }
+  */
+
 }
