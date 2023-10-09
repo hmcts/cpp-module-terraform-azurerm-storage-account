@@ -51,6 +51,7 @@ data "azurerm_private_dns_zone" "sa_file" {
 }
 
 
+/*
 resource "azurerm_private_endpoint" "endpoint_blob" {
   count               = var.public_network_access_enabled ? 0 : 1
   name                = "${var.storage_account_name}-blob-pvt"
@@ -90,6 +91,50 @@ resource "azurerm_private_endpoint" "endpoint_file" {
   }
   tags = var.tags
 }
+
+*/
+
+resource "azurerm_private_endpoint" "endpoint_blob" {
+  count               = var.public_network_access_enabled ? 0 : length(var.subnet_sa)
+  name                = "${var.storage_account_name}-blob-pvt-${count.index}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = var.subnet_sa[count.index]
+
+  private_service_connection {
+    name                           = "${var.private_endpoint_connection_name}-blob-${count.index}"
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["blob"]
+    is_manual_connection           = false
+  }
+  private_dns_zone_group {
+    name                 = "dns-zone-group-sa-blob-${count.index}"
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_blob[0].id]
+  }
+  tags = var.tags
+}
+
+resource "azurerm_private_endpoint" "endpoint_file" {
+  count               = var.public_network_access_enabled ? 0 : length(var.subnet_sa)
+  name                = "${var.storage_account_name}-file-pvt-${count.index}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = var.subnet_sa[count.index]
+
+  private_service_connection {
+    name                           = "${var.private_endpoint_connection_name}-file-${count.index}"
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["file"]
+    is_manual_connection           = false
+  }
+  private_dns_zone_group {
+    name                 = "dns-zone-group-sa-file-${count.index}"
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_file[0].id]
+  }
+  tags = var.tags
+}
+
+
 
 resource "azurerm_storage_container" "container" {
   count                 = var.containers_list == null ? 0 : length(var.containers_list)

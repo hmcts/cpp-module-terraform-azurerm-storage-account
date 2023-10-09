@@ -218,9 +218,8 @@ variable "private_endpoint_connection_name" {
 
 
 variable "subnet_sa" {
-  description = "Subnet for storage account"
-  type        = string
-  default     = ""
+  description = "The subnet IDs"
+  type        = list(string)
 }
 
 variable "enable_data_lookup" {
