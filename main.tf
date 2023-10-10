@@ -39,60 +39,16 @@ resource "azurerm_storage_account" "main" {
 data "azurerm_private_dns_zone" "sa_blob" {
   count               = var.enable_data_lookup ? 1 : 0
   name                = "privatelink.blob.core.windows.net"
-  resource_group_name = "RG-MDV-INT-01"
+  resource_group_name = var.dns_resource_group_name
 
 }
 
 data "azurerm_private_dns_zone" "sa_file" {
   count               = var.enable_data_lookup ? 1 : 0
   name                = "privatelink.file.core.windows.net"
-  resource_group_name = "RG-MDV-INT-01"
+  resource_group_name = var.dns_resource_group_name
 
 }
-
-
-/*
-resource "azurerm_private_endpoint" "endpoint_blob" {
-  count               = var.public_network_access_enabled ? 0 : 1
-  name                = "${var.storage_account_name}-blob-pvt"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  subnet_id           = var.subnet_sa
-
-  private_service_connection {
-    name                           = var.private_endpoint_connection_name
-    private_connection_resource_id = azurerm_storage_account.main.id
-    subresource_names              = ["blob"]
-    is_manual_connection           = false
-  }
-  private_dns_zone_group {
-    name                 = "dns-zone-group-sa"
-    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_blob[0].id]
-  }
-  tags = var.tags
-}
-
-resource "azurerm_private_endpoint" "endpoint_file" {
-  count               = var.public_network_access_enabled ? 0 : 1
-  name                = "${var.storage_account_name}-file-pvt"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  subnet_id           = var.subnet_sa
-
-  private_service_connection {
-    name                           = var.private_endpoint_connection_name
-    private_connection_resource_id = azurerm_storage_account.main.id
-    subresource_names              = ["file"]
-    is_manual_connection           = false
-  }
-  private_dns_zone_group {
-    name                 = "dns-zone-group-sa"
-    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_file[0].id]
-  }
-  tags = var.tags
-}
-
-*/
 
 resource "azurerm_private_endpoint" "endpoint_blob" {
   count               = var.public_network_access_enabled ? 0 : length(var.subnet_sa)
