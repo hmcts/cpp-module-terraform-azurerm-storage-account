@@ -220,6 +220,7 @@ variable "private_endpoint_connection_name" {
 variable "subnet_sa" {
   description = "The subnet IDs"
   type        = list(string)
+  default     = []
 }
 
 variable "enable_data_lookup" {
