@@ -52,7 +52,7 @@ data "azurerm_private_dns_zone" "sa_file" {
 
 resource "azurerm_private_endpoint" "endpoint_blob" {
   count               = var.public_network_access_enabled ? 0 : length(var.subnet_sa)
-  name                = "${var.storage_account_name}-blob-pvt-${count.index}"
+  name                = "${var.storage_account_name}-blob-pvt-rg-${count.index}"
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.subnet_sa[count.index]
@@ -64,7 +64,7 @@ resource "azurerm_private_endpoint" "endpoint_blob" {
     is_manual_connection           = false
   }
   private_dns_zone_group {
-    name                 = "dns-zone-group-sa-blob-${count.index}"
+    name                 = "dns-zone-grp-sa-blob-${count.index}"
     private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_blob[count.index].id]
   }
   tags = var.tags
