@@ -61,13 +61,6 @@ variable "resource_group_name" {
   type        = string
 }
 
-
-variable "dns_resource_group_name" {
-  description = "The name of the resource group in which DNS resides"
-  type        = string
-  default     = "RG-MDV-INT-01"
-}
-
 variable "account_kind" {
   description = "Specifies the kind of storage account. Valid options are Storage, StorageV2, BlobStorage, FileStorage, BlockBlobStorage. Changing this forces a new resource to be created."
   type        = string
@@ -232,4 +225,16 @@ variable "subnet_sa" {
 variable "enable_data_lookup" {
   type    = bool
   default = false
+}
+
+variable "blob_resource_group_name" {
+  description = "private_dns"
+  type        = list(string)
+  default     = []
+}
+
+variable "dns_resource_group_name" {
+  description = "private_dns"
+  type        = string
+  default     = "RG-MDV-INT-01"
 }

@@ -37,9 +37,9 @@ resource "azurerm_storage_account" "main" {
 
 
 data "azurerm_private_dns_zone" "sa_blob" {
-  count               = var.enable_data_lookup ? 1 : 0
+  count               = var.enable_data_lookup ? length(var.blob_resource_group_name) : 0
   name                = "privatelink.blob.core.windows.net"
-  resource_group_name = var.dns_resource_group_name
+  resource_group_name = var.blob_resource_group_name[count.index]
 
 }
 
@@ -65,7 +65,7 @@ resource "azurerm_private_endpoint" "endpoint_blob" {
   }
   private_dns_zone_group {
     name                 = "dns-zone-group-sa-blob-${count.index}"
-    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_blob[0].id]
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_blob[count.index].id]
   }
   tags = var.tags
 }
