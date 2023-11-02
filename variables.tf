@@ -228,7 +228,7 @@ variable "enable_data_lookup" {
   default = false
 }
 
-variable "blob_resource_group_name" {
+variable "dns_resource_group_name_list" {
   description = "private_dns"
   type        = list(string)
   default     = []
