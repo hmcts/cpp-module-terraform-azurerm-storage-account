@@ -112,8 +112,3 @@ variable "public_network_access_enabled" {
   description = "Whether the public network access is enabled"
   type        = bool
 }
-
-variable "enable_data_lookup" {
-  type    = bool
-  default = false
-}

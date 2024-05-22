@@ -41,3 +41,11 @@ output "queues" {
   description = "Map of Storage SMB file shares."
   value       = { for q in azurerm_storage_queue.queues : q.name => q.id }
 }
+
+output "private_endpoints_config_blob" {
+  value = var.private_endpoints_config_blob
+}
+
+output "private_endpoints_config_file" {
+  value = var.private_endpoints_config_file
+}
