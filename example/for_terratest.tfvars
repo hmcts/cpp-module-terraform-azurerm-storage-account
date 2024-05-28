@@ -13,5 +13,4 @@ owner                         = "EI"
 environment                   = "nonlive"
 application                   = "test"
 type                          = "storageaccount"
-enable_data_lookup            = false
 public_network_access_enabled = true

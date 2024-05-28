@@ -209,25 +209,6 @@ variable "public_network_access_enabled" {
   type        = bool
 }
 
-
-variable "private_endpoint_connection_name" {
-  description = "Endpoint connection name."
-  type        = string
-  default     = "pvt-sa-test-conn"
-}
-
-
-variable "subnet_sa" {
-  description = "The subnet IDs"
-  type        = list(string)
-  default     = []
-}
-
-variable "enable_data_lookup" {
-  type    = bool
-  default = false
-}
-
 variable "dns_resource_group_name_list" {
   description = "private_dns"
   type        = list(string)
@@ -238,4 +219,34 @@ variable "dns_resource_group_name" {
   description = "private_dns"
   type        = string
   default     = "RG-MDV-INT-01"
+}
+
+variable "enable_lifecycle_policy" {
+  description = "Enable or disable lifecycle policy"
+  type        = bool
+  default     = false
+}
+
+variable "lifecycle_policy_rule" {
+  description = "Lifecycle policy rule to be applied"
+  type = object({
+    name         = string
+    enabled      = bool
+    days         = number
+    prefix_match = optional(list(string))
+    blob_types   = list(string)
+  })
+  default = null
+}
+
+variable "private_endpoints_config_blob" {
+  description = "Configuration for the private endpoints"
+  type        = list(any)
+  default     = []
+}
+
+variable "private_endpoints_config_file" {
+  description = "Configuration for the private endpoints"
+  type        = list(any)
+  default     = []
 }

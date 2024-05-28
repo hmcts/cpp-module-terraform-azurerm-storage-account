@@ -35,68 +35,76 @@ resource "azurerm_storage_account" "main" {
   }
 }
 
-
-data "azurerm_private_dns_zone" "sa_blob" {
-  count               = var.enable_data_lookup ? length(var.dns_resource_group_name_list) : 0
-  name                = "privatelink.blob.core.windows.net"
-  resource_group_name = var.dns_resource_group_name_list[count.index]
-
-}
-
-data "azurerm_private_dns_zone" "sa_file" {
-  count               = var.enable_data_lookup ? 1 : 0
-  name                = "privatelink.file.core.windows.net"
-  resource_group_name = var.dns_resource_group_name
-
+resource "azurerm_storage_management_policy" "main" {
+  count              = var.enable_lifecycle_policy && var.lifecycle_policy_rule != {} ? 1 : 0
+  storage_account_id = azurerm_storage_account.main.id
+  rule {
+    name    = var.lifecycle_policy_rule.name
+    enabled = var.lifecycle_policy_rule.enabled
+    filters {
+      prefix_match = var.lifecycle_policy_rule.prefix_match
+      blob_types   = var.lifecycle_policy_rule.blob_types
+    }
+    actions {
+      base_blob {
+        delete_after_days_since_modification_greater_than = var.lifecycle_policy_rule.days
+      }
+      snapshot {
+        delete_after_days_since_creation_greater_than = var.lifecycle_policy_rule.days
+      }
+    }
+  }
 }
 
 resource "azurerm_private_endpoint" "endpoint_blob" {
-  count               = var.public_network_access_enabled ? 0 : length(var.subnet_sa)
-  name                = "${var.storage_account_name}-blob-pvt-rg-${count.index}"
+  for_each            = { for i, config in var.private_endpoints_config_blob : i => config }
+  name                = "blob-pe-${each.value.subnet_name}-${azurerm_storage_account.main.name}"
   location            = var.location
   resource_group_name = var.resource_group_name
-  subnet_id           = var.subnet_sa[count.index]
+  subnet_id           = each.value.subnet_id
 
   private_service_connection {
-    name                           = "${var.private_endpoint_connection_name}-blob-${count.index}"
+    name                           = "blob-psc-${each.value.subnet_name}-${azurerm_storage_account.main.name}"
     private_connection_resource_id = azurerm_storage_account.main.id
     subresource_names              = ["blob"]
     is_manual_connection           = false
   }
   private_dns_zone_group {
-    name                 = "dns-zone-grp-sa-blob-${count.index}"
-    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_blob[count.index].id]
+    name                 = "dns-zone-grp-blob-${each.value.private_dns_resource_group_name}"
+    private_dns_zone_ids = [each.value.dns_id]
   }
   tags = var.tags
 }
 
 resource "azurerm_private_endpoint" "endpoint_file" {
-  count               = var.public_network_access_enabled ? 0 : length(var.subnet_sa)
-  name                = "${var.storage_account_name}-file-pvt-${count.index}"
+  for_each            = { for i, config in var.private_endpoints_config_file : i => config }
+  name                = "file-pe-${each.value.subnet_name}-${azurerm_storage_account.main.name}"
   location            = var.location
   resource_group_name = var.resource_group_name
-  subnet_id           = var.subnet_sa[count.index]
+  subnet_id           = each.value.subnet_id
 
   private_service_connection {
-    name                           = "${var.private_endpoint_connection_name}-file-${count.index}"
+    name                           = "file-psc-${each.value.subnet_name}-${azurerm_storage_account.main.name}"
     private_connection_resource_id = azurerm_storage_account.main.id
     subresource_names              = ["file"]
     is_manual_connection           = false
   }
   private_dns_zone_group {
-    name                 = "dns-zone-group-sa-file-${count.index}"
-    private_dns_zone_ids = [data.azurerm_private_dns_zone.sa_file[0].id]
+    name                 = "dns-zone-group-file-${each.value.private_dns_resource_group_name}"
+    private_dns_zone_ids = [each.value.dns_id]
   }
   tags = var.tags
 }
-
-
 
 resource "azurerm_storage_container" "container" {
   count                 = var.containers_list == null ? 0 : length(var.containers_list)
   name                  = var.containers_list[count.index].name
   storage_account_name  = azurerm_storage_account.main.name
   container_access_type = var.containers_list[count.index].access_type
+  depends_on = [
+    azurerm_private_endpoint.endpoint_blob,
+    azurerm_private_endpoint.endpoint_file
+  ]
 }
 
 
@@ -105,27 +113,28 @@ resource "azurerm_storage_share" "fileshare" {
   name                 = var.file_shares[count.index].name
   storage_account_name = azurerm_storage_account.main.name
   quota                = var.file_shares[count.index].quota
+  depends_on = [
+    azurerm_private_endpoint.endpoint_blob,
+    azurerm_private_endpoint.endpoint_file
+  ]
 }
 
 resource "azurerm_storage_table" "tables" {
   count                = var.tables == null ? 0 : length(var.tables)
   name                 = var.tables[count.index]
   storage_account_name = azurerm_storage_account.main.name
+  depends_on = [
+    azurerm_private_endpoint.endpoint_blob,
+    azurerm_private_endpoint.endpoint_file
+  ]
 }
 
 resource "azurerm_storage_queue" "queues" {
   count                = var.queues == null ? 0 : length(var.queues)
   name                 = var.queues[count.index]
   storage_account_name = azurerm_storage_account.main.name
+  depends_on = [
+    azurerm_private_endpoint.endpoint_blob,
+    azurerm_private_endpoint.endpoint_file
+  ]
 }
-
-/* This is already applied with azurerm_storage_account
-resource "azurerm_storage_account_network_rules" "netrules" {
-  count                      = var.public_network_access_enabled ? 0 : 1
-  storage_account_id         = azurerm_storage_account.main.id
-  default_action             = "Deny"
-  virtual_network_subnet_ids = [var.subnet_sa]
-  bypass                     = ["AzureServices"]
-
-}
-*/
