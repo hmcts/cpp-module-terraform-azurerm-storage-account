@@ -250,3 +250,14 @@ variable "private_endpoints_config_file" {
   type        = list(any)
   default     = []
 }
+
+variable "network_rules" {
+  description = "Network rules"
+  type = object({
+    default_action             = string
+    ip_rules                   = list(string)
+    virtual_network_subnet_ids = list(string)
+    bypass                     = optional(list(string))
+  })
+  default = null
+}
