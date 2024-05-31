@@ -138,3 +138,12 @@ resource "azurerm_storage_queue" "queues" {
     azurerm_private_endpoint.endpoint_file
   ]
 }
+
+resource "azurerm_storage_account_network_rules" "main" {
+  count                      = var.network_rules == null ? 0 : 1
+  storage_account_id         = azurerm_storage_account.main.id
+  default_action             = var.network_rules.default_action
+  ip_rules                   = var.network_rules.ip_rules
+  virtual_network_subnet_ids = var.network_rules.virtual_network_subnet_ids
+  bypass                     = try(var.network_rules.bypass, null)
+}
