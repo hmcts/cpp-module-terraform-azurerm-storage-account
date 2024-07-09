@@ -96,6 +96,26 @@ resource "azurerm_private_endpoint" "endpoint_file" {
   tags = var.tags
 }
 
+resource "azurerm_private_endpoint" "endpoint_dfs" {
+  for_each            = { for i, config in var.private_endpoints_config_dfs : i => config }
+  name                = "dfs-pe-${each.value.subnet_name}-${azurerm_storage_account.main.name}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = each.value.subnet_id
+
+  private_service_connection {
+    name                           = "dfs-psc-${each.value.subnet_name}-${azurerm_storage_account.main.name}"
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["dfs"]
+    is_manual_connection           = false
+  }
+  private_dns_zone_group {
+    name                 = "dns-zone-group-dfs-${each.value.private_dns_resource_group_name}"
+    private_dns_zone_ids = [each.value.dns_id]
+  }
+  tags = var.tags
+}
+
 resource "azurerm_storage_container" "container" {
   count                 = var.containers_list == null ? 0 : length(var.containers_list)
   name                  = var.containers_list[count.index].name
