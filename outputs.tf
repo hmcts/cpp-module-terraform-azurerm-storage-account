@@ -49,3 +49,7 @@ output "private_endpoints_config_blob" {
 output "private_endpoints_config_file" {
   value = var.private_endpoints_config_file
 }
+
+output "private_endpoints_config_dfs" {
+  value = var.private_endpoints_config_dfs
+}
