@@ -267,3 +267,12 @@ variable "network_rules" {
   })
   default = null
 }
+
+variable "role_assignments" {
+  description = "List of Role Assignments to create, scoped to this storage account"
+  type = list(object({
+    role_name = string // Name of the RBAC role to assign
+    object_id = string // principal (object) id to assign the role to
+  }))
+  default = []
+}
