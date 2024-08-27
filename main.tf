@@ -169,8 +169,8 @@ resource "azurerm_storage_account_network_rules" "main" {
 }
 
 resource "azurerm_role_assignment" "this" {
-  for_each = toset(var.role_assignments)
+  for_each             = toset(var.role_assignments)
   role_definition_name = this.role_name
-  principal_id = this.object_id
-  scope = azurerm_storage_account.main.id
+  principal_id         = this.object_id
+  scope                = azurerm_storage_account.main.id
 }
