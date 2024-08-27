@@ -170,7 +170,7 @@ resource "azurerm_storage_account_network_rules" "main" {
 
 resource "azurerm_role_assignment" "this" {
   for_each             = toset(var.role_assignments)
-  role_definition_name = this.role_name
-  principal_id         = this.object_id
+  role_definition_name = each.value.role_name
+  principal_id         = each.value.object_id
   scope                = azurerm_storage_account.main.id
 }
