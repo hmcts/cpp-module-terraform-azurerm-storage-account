@@ -74,6 +74,10 @@ resource "azurerm_private_endpoint" "endpoint_blob" {
     private_dns_zone_ids = [each.value.dns_id]
   }
   tags = var.tags
+
+  provisioner "local-exec" {
+    command = "sleep ${local.post_private_endpoint_sleep_duration}"
+  }
 }
 
 resource "azurerm_private_endpoint" "endpoint_file" {
@@ -94,6 +98,10 @@ resource "azurerm_private_endpoint" "endpoint_file" {
     private_dns_zone_ids = [each.value.dns_id]
   }
   tags = var.tags
+
+  provisioner "local-exec" {
+    command = "sleep ${local.post_private_endpoint_sleep_duration}"
+  }
 }
 
 resource "azurerm_private_endpoint" "endpoint_dfs" {
@@ -114,6 +122,10 @@ resource "azurerm_private_endpoint" "endpoint_dfs" {
     private_dns_zone_ids = [each.value.dns_id]
   }
   tags = var.tags
+
+  provisioner "local-exec" {
+    command = "sleep ${local.post_private_endpoint_sleep_duration}"
+  }
 }
 
 resource "azurerm_storage_container" "container" {
