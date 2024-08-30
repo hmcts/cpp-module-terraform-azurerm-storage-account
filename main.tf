@@ -10,7 +10,6 @@ resource "azurerm_storage_account" "main" {
   sftp_enabled                      = var.enable_sftp
   large_file_share_enabled          = var.enable_large_file_share
   allow_nested_items_to_be_public   = false
-  enable_https_traffic_only         = true
   public_network_access_enabled     = var.public_network_access_enabled
   min_tls_version                   = "TLS1_2"
   nfsv3_enabled                     = var.nfsv3_enabled
@@ -166,4 +165,11 @@ resource "azurerm_storage_account_network_rules" "main" {
   ip_rules                   = var.network_rules.ip_rules
   virtual_network_subnet_ids = var.network_rules.virtual_network_subnet_ids
   bypass                     = try(var.network_rules.bypass, null)
+}
+
+resource "azurerm_role_assignment" "this" {
+  for_each             = toset(var.role_assignments)
+  role_definition_name = each.value.role_name
+  principal_id         = each.value.object_id
+  scope                = azurerm_storage_account.main.id
 }
