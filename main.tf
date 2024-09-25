@@ -10,6 +10,7 @@ resource "azurerm_storage_account" "main" {
   sftp_enabled                      = var.enable_sftp
   large_file_share_enabled          = var.enable_large_file_share
   allow_nested_items_to_be_public   = false
+  https_traffic_only_enabled        = true
   public_network_access_enabled     = var.public_network_access_enabled
   min_tls_version                   = "TLS1_2"
   nfsv3_enabled                     = var.nfsv3_enabled
@@ -73,6 +74,10 @@ resource "azurerm_private_endpoint" "endpoint_blob" {
     private_dns_zone_ids = [each.value.dns_id]
   }
   tags = var.tags
+
+  provisioner "local-exec" {
+    command = "sleep ${local.post_private_endpoint_sleep_duration}"
+  }
 }
 
 resource "azurerm_private_endpoint" "endpoint_file" {
@@ -93,6 +98,10 @@ resource "azurerm_private_endpoint" "endpoint_file" {
     private_dns_zone_ids = [each.value.dns_id]
   }
   tags = var.tags
+
+  provisioner "local-exec" {
+    command = "sleep ${local.post_private_endpoint_sleep_duration}"
+  }
 }
 
 resource "azurerm_private_endpoint" "endpoint_dfs" {
@@ -113,6 +122,10 @@ resource "azurerm_private_endpoint" "endpoint_dfs" {
     private_dns_zone_ids = [each.value.dns_id]
   }
   tags = var.tags
+
+  provisioner "local-exec" {
+    command = "sleep ${local.post_private_endpoint_sleep_duration}"
+  }
 }
 
 resource "azurerm_storage_container" "container" {

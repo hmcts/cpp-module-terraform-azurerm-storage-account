@@ -33,6 +33,7 @@ resource "azurerm_subnet" "test" {
   virtual_network_name                          = azurerm_virtual_network.test.name
   address_prefixes                              = ["10.0.1.0/24"]
   private_link_service_network_policies_enabled = false
+  private_endpoint_network_policies             = "Enabled"
 }
 
 resource "azurerm_lb" "test" {
@@ -91,7 +92,6 @@ module "storage_account" {
   blob_soft_delete_retention_days      = var.blob_soft_delete_retention_days
   container_soft_delete_retention_days = var.container_soft_delete_retention_days
   public_network_access_enabled        = var.public_network_access_enabled
-
 
   private_link_access = {
     private_endpoint_1 = {
