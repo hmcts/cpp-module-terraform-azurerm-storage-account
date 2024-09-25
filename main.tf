@@ -179,3 +179,10 @@ resource "azurerm_storage_account_network_rules" "main" {
   virtual_network_subnet_ids = var.network_rules.virtual_network_subnet_ids
   bypass                     = try(var.network_rules.bypass, null)
 }
+
+resource "azurerm_role_assignment" "this" {
+  for_each             = toset(var.role_assignments)
+  role_definition_name = each.value.role_name
+  principal_id         = each.value.object_id
+  scope                = azurerm_storage_account.main.id
+}
