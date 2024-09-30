@@ -10,7 +10,6 @@ resource "azurerm_storage_account" "main" {
   sftp_enabled                      = var.enable_sftp
   large_file_share_enabled          = var.enable_large_file_share
   allow_nested_items_to_be_public   = false
-  https_traffic_only_enabled        = true
   public_network_access_enabled     = var.public_network_access_enabled
   min_tls_version                   = "TLS1_2"
   nfsv3_enabled                     = var.nfsv3_enabled
