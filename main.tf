@@ -188,7 +188,7 @@ resource "azurerm_role_assignment" "this" {
 
 resource "vault_generic_secret" "administrator_creds" {
   count = var.create_access_key_in_vault ? 1 : 0
-  path = "secret/${var.environment}/${var.storage_account_name}"
+  path  = "secret/${var.environment}/${var.storage_account_name}"
 
   data_json = <<EOT
 {
