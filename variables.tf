@@ -276,3 +276,8 @@ variable "role_assignments" {
   }))
   default = []
 }
+
+variable "create_access_key_in_vault" {
+  description = "Creates primary access key in vault"
+  default     = false
+}

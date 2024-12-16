@@ -185,3 +185,14 @@ resource "azurerm_role_assignment" "this" {
   principal_id         = each.value.object_id
   scope                = azurerm_storage_account.main.id
 }
+
+resource "vault_generic_secret" "administrator_creds" {
+  count = var.create_access_key_in_vault ? 1 : 0
+  path  = "secret/${var.environment}/${var.storage_account_name}"
+
+  data_json = <<EOT
+{
+  "connection_string": "${azurerm_storage_account.main.primary_connection_string}"
+}
+EOT
+}
