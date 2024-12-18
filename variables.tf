@@ -182,8 +182,14 @@ variable "change_feed_enabled" {
 
 variable "containers_list" {
   description = "List of containers to create and their access levels."
-  type        = list(object({ name = string, access_type = string }))
-  default     = []
+  type = list(object({
+    name        = string,
+    access_type = string,
+    role_assignments = optional(list(object({
+      role_name = string
+      object_id = string
+  })), []) }))
+  default = []
 }
 
 variable "file_shares" {
