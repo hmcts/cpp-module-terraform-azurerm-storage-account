@@ -212,6 +212,6 @@ resource "azurerm_role_assignment" "container_roles" {
   }
 
   scope                = azurerm_storage_container.container[each.value.container_name].id
-  role_definition_name = data.azurerm_role_definition.role_definitions[each.value.role_name].id
+  role_definition_name = each.value.role_name
   principal_id         = each.value.object_id
 }
