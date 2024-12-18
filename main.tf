@@ -203,8 +203,8 @@ resource "azurerm_role_assignment" "container_roles" {
     container.name => flatten([
       for role in container.role_assignments :
       {
-        role_name   = role.role_name
-        object_id   = role.object_id
+        role_name      = role.role_name
+        object_id      = role.object_id
         container_name = container.name
       }
     ])
