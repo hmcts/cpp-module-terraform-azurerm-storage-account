@@ -197,21 +197,23 @@ resource "vault_generic_secret" "administrator_creds" {
 EOT
 }
 
+data "azurerm_storage_container" "container" {
+  for_each             = { for idx, container in var.containers_list : container.name => container }
+  name                 = each.value.name
+  storage_account_name = azurerm_storage_account.main.name
+  depends_on = [
+    azurerm_storage_container.container
+  ]
+}
+
 resource "azurerm_role_assignment" "container_roles" {
   for_each = {
-    for container in var.containers_list :
-    container.name => flatten([
-      for role in container.role_assignments :
-      {
-        role_name      = role.role_name
-        object_id      = role.object_id
-        container_name = container.name
-      }
-    ])
+    for idx, container in var.containers_list :
+    "${idx}-${container.name}" => container
     if length(container.role_assignments) > 0
   }
 
-  scope                = azurerm_storage_container.container[each.value.container_name].id
-  role_definition_name = each.value.role_name
-  principal_id         = each.value.object_id
+  scope                = data.azurerm_storage_container.container[each.value.name].id
+  role_definition_name = each.value.role_assignments[0].role_name
+  principal_id         = each.value.role_assignments[0].object_id
 }
