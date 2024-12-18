@@ -188,7 +188,7 @@ variable "containers_list" {
     role_assignments = optional(list(object({
       role_name = string
       object_id = string
-  }))) }))
+  }))) }), [])
   default = []
 }
 
