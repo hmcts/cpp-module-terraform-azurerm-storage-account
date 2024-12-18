@@ -196,3 +196,22 @@ resource "vault_generic_secret" "administrator_creds" {
 }
 EOT
 }
+
+resource "azurerm_role_assignment" "container_roles" {
+  for_each = {
+    for container in var.containers_list :
+    container.name => flatten([
+      for role in container.role_assignments :
+      {
+        role_name   = role.role_name
+        object_id   = role.object_id
+        container_name = container.name
+      }
+    ])
+    if length(container.role_assignments) > 0
+  }
+
+  scope                = azurerm_storage_container.container[each.value.container_name].id
+  role_definition_name = data.azurerm_role_definition.role_definitions[each.value.role_name].id
+  principal_id         = each.value.object_id
+}
