@@ -213,7 +213,7 @@ resource "azurerm_role_assignment" "container_roles" {
     if length(container.role_assignments) > 0
   }
 
-  scope                = data.azurerm_storage_container.container[each.value.name].id
+  scope                = data.azurerm_storage_container.container[each.value.name].resource_manager_id
   role_definition_name = each.value.role_assignments[0].role_name
   principal_id         = each.value.role_assignments[0].object_id
 }
