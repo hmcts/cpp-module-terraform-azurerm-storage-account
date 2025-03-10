@@ -214,3 +214,10 @@ resource "azurerm_role_assignment" "container_roles" {
   role_definition_name = each.value.role_assignments[0].role_name
   principal_id         = each.value.role_assignments[0].object_id
 }
+
+resource "azurerm_management_lock" "storage_account_lock" {
+  name       = "lock-${azurerm_storage_account.main.name}"
+  scope      = azurerm_storage_account.main.id
+  lock_level = "CanNotDelete"
+  notes      = "This lock protects the storage account from accidental deletion."
+}
