@@ -205,8 +205,13 @@ locals {
 
 resource "azurerm_role_assignment" "container_roles" {
   for_each = {
-    for idx, container in var.containers_list :
-    "${idx}-${container.name}" => container
+    for container_idx, container in var.containers_list :
+    for role_idx, role_assignment in container.role_assignments :
+    "${container_idx}-${role_idx}-${container.name}" => {
+      container_name = container.name
+      role_name      = role_assignment.role_name
+      object_id      = role_assignment.object_id
+    }
     if length(container.role_assignments) > 0
   }
 
