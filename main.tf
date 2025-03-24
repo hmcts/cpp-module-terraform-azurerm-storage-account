@@ -203,24 +203,24 @@ locals {
   }
   # Flatten the containers with role assignments
   flattened_role_assignments = flatten([
-      for container_idx, container in var.containers_list : [
-        for role_idx, role_assignment in container.role_assignments :
-        {
-          container_name = container.name
-          role_name      = role_assignment.role_name
-          object_id      = role_assignment.object_id
-          container_idx  = container_idx
-          role_idx       = role_idx
-        }
-      ]
-      if length(container.role_assignments) > 0
-    ])
+    for container_idx, container in var.containers_list : [
+      for role_idx, role_assignment in container.role_assignments :
+      {
+        container_name = container.name
+        role_name      = role_assignment.role_name
+        object_id      = role_assignment.object_id
+        container_idx  = container_idx
+        role_idx       = role_idx
+      }
+    ]
+    if length(container.role_assignments) > 0
+  ])
 }
 
 resource "azurerm_role_assignment" "container_roles" {
   for_each = { for idx, assignment in local.flattened_role_assignments :
-      "${assignment.container_idx}-${assignment.role_idx}-${assignment.container_name}" => assignment
-    }
+    "${assignment.container_idx}-${assignment.role_idx}-${assignment.container_name}" => assignment
+  }
 
   scope                = azurerm_storage_container.container[local.container_name_to_index[each.value.container_name]].resource_manager_id
   role_definition_name = each.value.role_name
