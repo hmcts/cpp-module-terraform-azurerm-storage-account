@@ -288,14 +288,13 @@ variable "create_access_key_in_vault" {
   default     = false
 }
 
-variable "role_assignments" {
-  description = "Account-scope RBAC assignments on the Storage Account"
+variable "account_role_assignments" {
+  description = "Account-scope RBAC on the Storage Account"
   type = list(object({
-    role_name      = string // "Storage Blob Data Reader"
-    object_id      = string // object id of SPN/user/group
-    principal_type = optional(string, "ServicePrincipal")
-    # Set true when assigning cross-tenant SPNs
-    skip_spn_check = optional(bool, false)
+    role_name      = string
+    object_id      = string
+    principal_type = optional(string, "ServicePrincipal") # ServicePrincipal|User|Group
+    skip_spn_check = optional(bool, false)                # cross-tenant SPN convenience
   }))
   default = []
 }
