@@ -229,3 +229,20 @@ resource "azurerm_role_assignment" "container_roles" {
   role_definition_name = each.value.role_name
   principal_id         = each.value.object_id
 }
+
+resource "azurerm_role_assignment" "account" {
+  for_each = {
+    for ra in var.role_assignments :
+    "${ra.role_name}|${ra.object_id}" => ra
+  }
+
+  scope                = azurerm_storage_account.this.id
+  role_definition_name = each.value.role_name
+  principal_id         = each.value.object_id
+  principal_type       = try(each.value.principal_type, "ServicePrincipal")
+
+  # Useful for cross-tenant service principals
+  skip_service_principal_aad_check = try(each.value.skip_spn_check, false)
+
+  depends_on = [azurerm_storage_account.this]
+}
