@@ -204,7 +204,8 @@ resource "azurerm_storage_table" "tables" {
   storage_account_name = azurerm_storage_account.main.name
   depends_on = [
     azurerm_private_endpoint.endpoint_blob,
-    azurerm_private_endpoint.endpoint_file
+    azurerm_private_endpoint.endpoint_file,
+    azurerm_private_endpoint.endpoint_table
   ]
 }
 
@@ -214,7 +215,8 @@ resource "azurerm_storage_queue" "queues" {
   storage_account_name = azurerm_storage_account.main.name
   depends_on = [
     azurerm_private_endpoint.endpoint_blob,
-    azurerm_private_endpoint.endpoint_file
+    azurerm_private_endpoint.endpoint_file,
+    azurerm_private_endpoint.endpoint_queue
   ]
 }
 
