@@ -275,11 +275,6 @@ variable "private_endpoints_config_table" {
   default     = []
 }
 
-variable "private_endpoints_config_dfs" {
-  description = "Configuration for the private endpoints"
-  type        = list(any)
-  default     = []
-}
 
 variable "network_rules" {
   description = "Network rules"
