@@ -263,6 +263,19 @@ variable "private_endpoints_config_dfs" {
   default     = []
 }
 
+variable "private_endpoints_config_queue" {
+  description = "Configuration for the private endpoints"
+  type        = list(any)
+  default     = []
+}
+
+variable "private_endpoints_config_table" {
+  description = "Configuration for the private endpoints"
+  type        = list(any)
+  default     = []
+}
+
+
 variable "network_rules" {
   description = "Network rules"
   type = object({

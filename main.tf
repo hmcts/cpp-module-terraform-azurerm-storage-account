@@ -127,6 +127,54 @@ resource "azurerm_private_endpoint" "endpoint_dfs" {
   }
 }
 
+resource "azurerm_private_endpoint" "endpoint_queue" {
+  for_each            = { for i, config in var.private_endpoints_config_queue : i => config }
+  name                = "queue-pe-${each.value.subnet_name}-${azurerm_storage_account.main.name}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = each.value.subnet_id
+
+  private_service_connection {
+    name                           = "queue-psc-${each.value.subnet_name}-${azurerm_storage_account.main.name}"
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["queue"]
+    is_manual_connection           = false
+  }
+  private_dns_zone_group {
+    name                 = "dns-zone-group-queue-${each.value.private_dns_resource_group_name}"
+    private_dns_zone_ids = [each.value.dns_id]
+  }
+  tags = var.tags
+
+  provisioner "local-exec" {
+    command = "sleep ${local.post_private_endpoint_sleep_duration}"
+  }
+}
+
+resource "azurerm_private_endpoint" "endpoint_table" {
+  for_each            = { for i, config in var.private_endpoints_config_table : i => config }
+  name                = "table-pe-${each.value.subnet_name}-${azurerm_storage_account.main.name}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = each.value.subnet_id
+
+  private_service_connection {
+    name                           = "table-psc-${each.value.subnet_name}-${azurerm_storage_account.main.name}"
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["table"]
+    is_manual_connection           = false
+  }
+  private_dns_zone_group {
+    name                 = "dns-zone-group-table-${each.value.private_dns_resource_group_name}"
+    private_dns_zone_ids = [each.value.dns_id]
+  }
+  tags = var.tags
+
+  provisioner "local-exec" {
+    command = "sleep ${local.post_private_endpoint_sleep_duration}"
+  }
+}
+
 resource "azurerm_storage_container" "container" {
   count                 = var.containers_list == null ? 0 : length(var.containers_list)
   name                  = var.containers_list[count.index].name
@@ -156,7 +204,8 @@ resource "azurerm_storage_table" "tables" {
   storage_account_name = azurerm_storage_account.main.name
   depends_on = [
     azurerm_private_endpoint.endpoint_blob,
-    azurerm_private_endpoint.endpoint_file
+    azurerm_private_endpoint.endpoint_file,
+    azurerm_private_endpoint.endpoint_table
   ]
 }
 
@@ -166,7 +215,8 @@ resource "azurerm_storage_queue" "queues" {
   storage_account_name = azurerm_storage_account.main.name
   depends_on = [
     azurerm_private_endpoint.endpoint_blob,
-    azurerm_private_endpoint.endpoint_file
+    azurerm_private_endpoint.endpoint_file,
+    azurerm_private_endpoint.endpoint_queue
   ]
 }
 
