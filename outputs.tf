@@ -53,3 +53,15 @@ output "private_endpoints_config_file" {
 output "private_endpoints_config_dfs" {
   value = var.private_endpoints_config_dfs
 }
+
+output "storage_account_blob_endpoint" {
+  value = azurerm_storage_account.main.primary_blob_endpoint
+}
+
+output "storage_account_queue_endpoint" {
+  value = azurerm_storage_account.main.primary_queue_endpoint
+}
+
+output "storage_account_table_endpoint" {
+  value = azurerm_storage_account.main.primary_table_endpoint
+}
