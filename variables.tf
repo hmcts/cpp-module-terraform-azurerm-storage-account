@@ -300,3 +300,14 @@ variable "create_access_key_in_vault" {
   description = "Creates primary access key in vault"
   default     = false
 }
+
+variable "account_role_assignments" {
+  description = "Account-scope RBAC on the Storage Account"
+  type = list(object({
+    role_name      = string
+    object_id      = string
+    principal_type = optional(string, "ServicePrincipal") # ServicePrincipal|User|Group
+    skip_spn_check = optional(bool, false)                # cross-tenant SPN convenience
+  }))
+  default = []
+}
