@@ -35,7 +35,7 @@ resource "azurerm_storage_account" "main" {
 }
 
 resource "azurerm_storage_management_policy" "main" {
-  count              = var.enable_lifecycle_policy && var.lifecycle_policy_rule != {} ? 1 : 0
+  count              = var.enable_lifecycle_policy && var.lifecycle_policy_rule != null ? 1 : 0
   storage_account_id = azurerm_storage_account.main.id
   rule {
     name    = var.lifecycle_policy_rule.name
@@ -54,6 +54,35 @@ resource "azurerm_storage_management_policy" "main" {
     }
   }
 }
+
+resource "azurerm_storage_management_policy" "main_extra" {
+  count              = var.enable_lifecycle_policy && length(coalesce(var.lifecycle_policy_rules_extra, {})) > 0 ? 1 : 0
+  storage_account_id = azurerm_storage_account.main.id
+
+  dynamic "rule" {
+    for_each = var.lifecycle_policy_rules_extra
+
+    content {
+      name    = rule.key
+      enabled = rule.value.enabled
+
+      filters {
+        prefix_match = rule.value.prefix_match
+        blob_types   = rule.value.blob_types
+      }
+
+      actions {
+        base_blob {
+          delete_after_days_since_modification_greater_than = rule.value.days
+        }
+        snapshot {
+          delete_after_days_since_creation_greater_than = rule.value.days
+        }
+      }
+    }
+  }
+}
+
 
 resource "azurerm_private_endpoint" "endpoint_blob" {
   for_each            = { for i, config in var.private_endpoints_config_blob : i => config }
