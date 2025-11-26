@@ -245,6 +245,19 @@ variable "lifecycle_policy_rule" {
   default = null
 }
 
+variable "lifecycle_policy_rules_extra" {
+  description = "Map of lifecycle policy rules"
+  type = map(object({
+    enabled      = bool
+    days         = optional(number)
+    creation_day = optional(number)
+    prefix_match = optional(list(string))
+    blob_types   = list(string)
+  }))
+  default = {}
+}
+
+
 variable "private_endpoints_config_blob" {
   description = "Configuration for the private endpoints"
   type        = list(any)
