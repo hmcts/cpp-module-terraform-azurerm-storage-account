@@ -249,7 +249,8 @@ variable "lifecycle_policy_rules_extra" {
   description = "Map of lifecycle policy rules"
   type = map(object({
     enabled      = bool
-    days         = number
+    days         = optional(number)
+    creation_day = optional(number)
     prefix_match = optional(list(string))
     blob_types   = list(string)
   }))
