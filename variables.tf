@@ -109,6 +109,12 @@ variable "enable_large_file_share" {
   default     = false
 }
 
+variable "enable_allow_nested_items" {
+  description = "Is Allow nested items to be public enabled for this storage account?"
+  type        = bool
+  default     = false
+}
+
 variable "nfsv3_enabled" {
   description = "Is NFSv3 protocol enabled for this storage account?"
   type        = bool
@@ -229,6 +235,12 @@ variable "dns_resource_group_name" {
 
 variable "enable_lifecycle_policy" {
   description = "Enable or disable lifecycle policy"
+  type        = bool
+  default     = false
+}
+
+variable "enable_stored_access_policy" {
+  description = "Enable or disable stored access policy"
   type        = bool
   default     = false
 }

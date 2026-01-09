@@ -9,7 +9,7 @@ resource "azurerm_storage_account" "main" {
   is_hns_enabled                    = var.enable_hns
   sftp_enabled                      = var.enable_sftp
   large_file_share_enabled          = var.enable_large_file_share
-  allow_nested_items_to_be_public   = false
+  allow_nested_items_to_be_public   = var.enable_allow_nested_items
   public_network_access_enabled     = var.public_network_access_enabled
   min_tls_version                   = "TLS1_2"
   nfsv3_enabled                     = var.nfsv3_enabled
@@ -308,4 +308,22 @@ resource "azurerm_role_assignment" "container_roles" {
   scope                = azurerm_storage_container.container[local.container_name_to_index[each.value.container_name]].resource_manager_id
   role_definition_name = each.value.role_name
   principal_id         = each.value.object_id
+}
+
+resource "null_resource" "apply_stored_access_policy" {
+  count = (var.enable_stored_access_policy != null ? var.enable_stored_access_policy : false) ? 1 : 0
+
+  triggers = {
+    container_id = azurerm_storage_container.container[count.index].id
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+      az storage container policy create \
+        --container-name ${azurerm_storage_container.container[count.index].name} \
+        --account-name ${azurerm_storage_account.main.name} \
+        --name "ReadPolicyIdentifier" \
+        --permissions r \
+    EOT
+  }
 }
