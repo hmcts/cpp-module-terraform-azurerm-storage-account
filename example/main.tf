@@ -69,8 +69,6 @@ resource "azurerm_private_link_service" "test" {
 #
 #}
 
-
-
 resource "azurerm_private_endpoint" "test" {
   name                = var.private_endpoint_name
   location            = var.location
@@ -85,6 +83,13 @@ resource "azurerm_private_endpoint" "test" {
   tags = module.tag_set.tags
 }
 
+resource "azurerm_data_factory" "test" {
+  name                = "adf-${var.storage_account_name}"
+  location            = azurerm_resource_group.test.location
+  resource_group_name = azurerm_resource_group.test.name
+  tags                = module.tag_set.tags
+}
+
 module "storage_account" {
   source                               = "../"
   storage_account_name                 = var.storage_account_name
@@ -94,8 +99,8 @@ module "storage_account" {
   public_network_access_enabled        = var.public_network_access_enabled
 
   private_link_access = {
-    private_endpoint_1 = {
-      endpoint_resource_id = azurerm_private_endpoint.test.id
+    resource_instance_1 = {
+      endpoint_resource_id = azurerm_data_factory.test.id
     }
   }
 

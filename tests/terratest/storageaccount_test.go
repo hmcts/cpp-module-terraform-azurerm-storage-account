@@ -2,6 +2,7 @@ package test
 
 import (
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/azure"
@@ -59,4 +60,30 @@ func TestTerraformAzureStorageAccount(t *testing.T) {
 	assert.Equal(t, "Standard_LRS", string(storageAccount.Sku.Name))
 	//assert.Equal(t, "Deny", string(storageAccountProperties.NetworkRuleSet.DefaultAction))
 	assert.Equal(t, "TLS1_2", string(storageAccountProperties.MinimumTLSVersion))
+}
+
+func TestTerraformAzureStorageAccount_InvalidPrivateEndpointResourceID(t *testing.T) {
+	t.Parallel()
+
+	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+		TerraformDir: "../../example/",
+		Upgrade:      true,
+		VarFiles:     []string{"for_terratest.tfvars"},
+		Vars: map[string]interface{}{
+			"private_link_access_endpoint_resource_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.Network/privateEndpoints/pe-test",
+		},
+	})
+
+	_, err := terraform.InitAndPlanE(t, terraformOptions)
+	if err == nil {
+		t.Fatal("expected terraform plan to fail for invalid private endpoint resource id")
+	}
+
+	assert.True(
+		t,
+		strings.Contains(err.Error(), "must be a supported Azure resource instance ID") ||
+			strings.Contains(err.Error(), "private_link_access.endpoint_resource_id"),
+		"expected validation error for invalid private_link_access endpoint_resource_id, got: %v",
+		err,
+	)
 }
