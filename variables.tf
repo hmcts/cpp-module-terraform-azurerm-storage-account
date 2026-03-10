@@ -141,7 +141,7 @@ variable "allowed_subnet_ids" {
 
 variable "private_link_access" {
   description = <<-EOF
-  Map of resource IDs of the private endpoints to connect to the storage account.
+  Map of resource IDs allowed to connect to the storage account.
   {
     [private_endpoint_id] = {
       endpoint_resource_id = [resource_id]

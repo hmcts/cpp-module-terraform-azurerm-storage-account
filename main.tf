@@ -251,12 +251,20 @@ resource "azurerm_storage_queue" "queues" {
 }
 
 resource "azurerm_storage_account_network_rules" "main" {
-  count                      = var.network_rules == null ? 0 : 1
+  count                      = (var.network_rules == null && length(var.private_link_access) == 0) ? 0 : 1
   storage_account_id         = azurerm_storage_account.main.id
-  default_action             = var.network_rules.default_action
-  ip_rules                   = var.network_rules.ip_rules
-  virtual_network_subnet_ids = var.network_rules.virtual_network_subnet_ids
+  default_action             = try(var.network_rules.default_action, "Deny")
+  ip_rules                   = try(var.network_rules.ip_rules, [])
+  virtual_network_subnet_ids = try(var.network_rules.virtual_network_subnet_ids, [])
   bypass                     = try(var.network_rules.bypass, null)
+
+  dynamic "private_link_access" {
+    for_each = var.private_link_access
+    content {
+      endpoint_resource_id = private_link_access.value.endpoint_resource_id
+      endpoint_tenant_id   = try(private_link_access.value.endpoint_tenant_id, null)
+    }
+  }
 }
 
 resource "azurerm_role_assignment" "this" {
