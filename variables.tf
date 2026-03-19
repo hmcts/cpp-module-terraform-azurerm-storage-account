@@ -141,7 +141,7 @@ variable "allowed_subnet_ids" {
 
 variable "private_link_access" {
   description = <<-EOF
-  Map of resource IDs of the private endpoints to connect to the storage account.
+  Map of resource IDs allowed to connect to the storage account.
   {
     [private_endpoint_id] = {
       endpoint_resource_id = [resource_id]
@@ -156,6 +156,14 @@ EOF
   }))
 
   default = {}
+
+  validation {
+    condition = alltrue([
+      for entry in values(var.private_link_access) :
+      length(regexall("(?i)/providers/microsoft\\.network/privateendpoints/", entry.endpoint_resource_id)) == 0
+    ])
+    error_message = "private_link_access.endpoint_resource_id must be a supported Azure resource instance ID, not a Private Endpoint resource ID."
+  }
 }
 
 variable "blob_soft_delete_retention_days" {
