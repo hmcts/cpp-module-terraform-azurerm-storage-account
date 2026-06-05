@@ -76,8 +76,11 @@ resource "azurerm_storage_management_policy" "main_extra" {
           delete_after_days_since_modification_greater_than = rule.value.days
           delete_after_days_since_creation_greater_than     = rule.value.creation_day
         }
-        snapshot {
-          delete_after_days_since_creation_greater_than = rule.value.creation_day
+        dynamic "snapshot" {
+          for_each = rule.value.creation_day != null ? [1] : []
+          content {
+            delete_after_days_since_creation_greater_than = rule.value.creation_day
+          }
         }
       }
     }
