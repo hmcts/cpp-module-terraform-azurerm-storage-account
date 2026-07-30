@@ -51,10 +51,11 @@ variable "storage_account_name" {
   type        = string
   default     = null
   validation {
-    condition     = length(var.storage_account_name) >= 3 && substr(var.storage_account_name, 0, 2) == "sa"
-    error_message = "The storage account name should start with 'sa' and be at least 3 characters long."
+    condition     = var.storage_account_name == "steaudit2dls" || (length(var.storage_account_name) >= 3 && substr(var.storage_account_name, 0, 2) == "sa")
+    error_message = "The storage account name should start with 'sa' and be at least 3 characters long (or be 'steaudit2dls')."
   }
 }
+
 
 variable "resource_group_name" {
   description = "The name of the resource group in which to create the storage account. Changing this forces a new resource to be created."
