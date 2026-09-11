@@ -211,7 +211,7 @@ resource "azurerm_private_endpoint" "endpoint_table" {
 resource "azurerm_storage_container" "container" {
   count                 = var.containers_list == null ? 0 : length(var.containers_list)
   name                  = var.containers_list[count.index].name
-  storage_account_name  = azurerm_storage_account.main.name
+  storage_account_id    = azurerm_storage_account.main.id
   container_access_type = var.containers_list[count.index].access_type
   depends_on = [
     azurerm_private_endpoint.endpoint_blob,
