@@ -168,15 +168,33 @@ EOF
 }
 
 variable "blob_soft_delete_retention_days" {
-  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`"
+  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`. Must be `14` or greater when `environment` is `prd` or `mpd`."
   default     = 7
   type        = number
+  validation {
+    condition     = var.blob_soft_delete_retention_days >= 1 && var.blob_soft_delete_retention_days <= 365
+    error_message = "blob_soft_delete_retention_days must be between 1 and 365 days."
+  }
 }
 
 variable "container_soft_delete_retention_days" {
-  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`"
+  description = "Specifies the number of days that the container should be retained, between `1` and `365` days. Defaults to `7`. Must be `14` or greater when `environment` is `prd` or `mpd`."
   default     = 7
   type        = number
+  validation {
+    condition     = var.container_soft_delete_retention_days >= 1 && var.container_soft_delete_retention_days <= 365
+    error_message = "container_soft_delete_retention_days must be between 1 and 365 days."
+  }
+}
+
+variable "file_soft_delete_retention_days" {
+  description = "Specifies the number of days that the file share should be retained, between `1` and `365` days. Defaults to `7`. Must be `14` or greater when `environment` is `prd` or `mpd`."
+  default     = 7
+  type        = number
+  validation {
+    condition     = var.file_soft_delete_retention_days >= 1 && var.file_soft_delete_retention_days <= 365
+    error_message = "file_soft_delete_retention_days must be between 1 and 365 days."
+  }
 }
 
 variable "enable_versioning" {
