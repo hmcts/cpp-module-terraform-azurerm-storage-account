@@ -33,8 +33,8 @@ resource "azurerm_storage_account" "main" {
     change_feed_enabled      = var.change_feed_enabled
   }
 
-  file_share_properties {
-    delete_retention_policy {
+  share_properties {
+    retention_policy {
       days = var.file_soft_delete_retention_days
     }
   }
