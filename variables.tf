@@ -168,32 +168,32 @@ EOF
 }
 
 variable "blob_soft_delete_retention_days" {
-  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`. Must be `14` or greater when `environment` is `prd` or `mpd`."
+  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`. Must be greater than `14` days when `environment` is `prd` or `mpd`."
   default     = 7
   type        = number
   validation {
-    condition     = (var.blob_soft_delete_retention_days >= 1 && var.blob_soft_delete_retention_days <= 365) && (contains(["prd", "mpd"], lower(var.environment)) ? var.blob_soft_delete_retention_days >= 14 : true)
-    error_message = "blob_soft_delete_retention_days must be between 1 and 365 days. When environment is 'prd' or 'mpd', it must be 14 or greater days."
+    condition     = (var.blob_soft_delete_retention_days >= 1 && var.blob_soft_delete_retention_days <= 365) && (contains(["prd", "mpd"], lower(var.environment)) ? var.blob_soft_delete_retention_days > 14 : true)
+    error_message = "blob_soft_delete_retention_days must be between 1 and 365 days. When environment is 'prd' or 'mpd', it must be greater than 14 days."
   }
 }
 
 variable "container_soft_delete_retention_days" {
-  description = "Specifies the number of days that the container should be retained, between `1` and `365` days. Defaults to `7`. Must be `14` or greater when `environment` is `prd` or `mpd`."
+  description = "Specifies the number of days that the container should be retained, between `1` and `365` days. Defaults to `7`. Must be greater than `14` days when `environment` is `prd` or `mpd`."
   default     = 7
   type        = number
   validation {
-    condition     = (var.container_soft_delete_retention_days >= 1 && var.container_soft_delete_retention_days <= 365) && (contains(["prd", "mpd"], lower(var.environment)) ? var.container_soft_delete_retention_days >= 14 : true)
-    error_message = "container_soft_delete_retention_days must be between 1 and 365 days. When environment is 'prd' or 'mpd', it must be 14 or greater days."
+    condition     = (var.container_soft_delete_retention_days >= 1 && var.container_soft_delete_retention_days <= 365) && (contains(["prd", "mpd"], lower(var.environment)) ? var.container_soft_delete_retention_days > 14 : true)
+    error_message = "container_soft_delete_retention_days must be between 1 and 365 days. When environment is 'prd' or 'mpd', it must be greater than 14 days."
   }
 }
 
 variable "file_soft_delete_retention_days" {
-  description = "Specifies the number of days that the file share should be retained, between `1` and `365` days. Defaults to `7`. Must be `14` or greater when `environment` is `prd` or `mpd`."
+  description = "Specifies the number of days that the file share should be retained, between `1` and `365` days. Defaults to `7`. Must be greater than `14` days when `environment` is `prd` or `mpd`."
   default     = 7
   type        = number
   validation {
-    condition     = (var.file_soft_delete_retention_days >= 1 && var.file_soft_delete_retention_days <= 365) && (contains(["prd", "mpd"], lower(var.environment)) ? var.file_soft_delete_retention_days >= 14 : true)
-    error_message = "file_soft_delete_retention_days must be between 1 and 365 days. When environment is 'prd' or 'mpd', it must be 14 or greater days."
+    condition     = (var.file_soft_delete_retention_days >= 1 && var.file_soft_delete_retention_days <= 365) && (contains(["prd", "mpd"], lower(var.environment)) ? var.file_soft_delete_retention_days > 14 : true)
+    error_message = "file_soft_delete_retention_days must be between 1 and 365 days. When environment is 'prd' or 'mpd', it must be greater than 14 days."
   }
 }
 
