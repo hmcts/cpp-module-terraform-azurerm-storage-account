@@ -211,7 +211,7 @@ resource "azurerm_private_endpoint" "endpoint_table" {
 resource "azurerm_storage_container" "container" {
   count                 = var.containers_list == null ? 0 : length(var.containers_list)
   name                  = var.containers_list[count.index].name
-  storage_account_name  = azurerm_storage_account.main.name
+  storage_account_id    = azurerm_storage_account.main.id
   container_access_type = var.containers_list[count.index].access_type
   depends_on = [
     azurerm_private_endpoint.endpoint_blob,
@@ -221,10 +221,10 @@ resource "azurerm_storage_container" "container" {
 
 
 resource "azurerm_storage_share" "fileshare" {
-  count                = var.file_shares == null ? 0 : length(var.file_shares)
-  name                 = var.file_shares[count.index].name
-  storage_account_name = azurerm_storage_account.main.name
-  quota                = var.file_shares[count.index].quota
+  count              = var.file_shares == null ? 0 : length(var.file_shares)
+  name               = var.file_shares[count.index].name
+  storage_account_id = azurerm_storage_account.main.id
+  quota              = var.file_shares[count.index].quota
   depends_on = [
     azurerm_private_endpoint.endpoint_blob,
     azurerm_private_endpoint.endpoint_file
@@ -232,9 +232,9 @@ resource "azurerm_storage_share" "fileshare" {
 }
 
 resource "azurerm_storage_table" "tables" {
-  count                = var.tables == null ? 0 : length(var.tables)
-  name                 = var.tables[count.index]
-  storage_account_name = azurerm_storage_account.main.name
+  count              = var.tables == null ? 0 : length(var.tables)
+  name               = var.tables[count.index]
+  storage_account_id = azurerm_storage_account.main.id
   depends_on = [
     azurerm_private_endpoint.endpoint_blob,
     azurerm_private_endpoint.endpoint_file,
@@ -243,9 +243,9 @@ resource "azurerm_storage_table" "tables" {
 }
 
 resource "azurerm_storage_queue" "queues" {
-  count                = var.queues == null ? 0 : length(var.queues)
-  name                 = var.queues[count.index]
-  storage_account_name = azurerm_storage_account.main.name
+  count              = var.queues == null ? 0 : length(var.queues)
+  name               = var.queues[count.index]
+  storage_account_id = azurerm_storage_account.main.id
   depends_on = [
     azurerm_private_endpoint.endpoint_blob,
     azurerm_private_endpoint.endpoint_file,
