@@ -173,7 +173,7 @@ variable "blob_soft_delete_retention_days" {
   type        = number
   validation {
     condition     = (var.blob_soft_delete_retention_days >= 1 && var.blob_soft_delete_retention_days <= 365) && (contains(["prd", "mpd"], lower(var.environment)) ? var.blob_soft_delete_retention_days >= 14 : true)
-    error_message = "Must be 1-365 days. For prd/mpd: minimum 14 days required."
+    error_message = "blob_soft_delete_retention_days must be between 1 and 365 days. When environment is 'prd' or 'mpd', it must be 14 or greater days."
   }
 }
 
@@ -183,7 +183,7 @@ variable "container_soft_delete_retention_days" {
   type        = number
   validation {
     condition     = (var.container_soft_delete_retention_days >= 1 && var.container_soft_delete_retention_days <= 365) && (contains(["prd", "mpd"], lower(var.environment)) ? var.container_soft_delete_retention_days >= 14 : true)
-    error_message = "Must be 1-365 days. For prd/mpd: minimum 14 days required."
+    error_message = "container_soft_delete_retention_days must be between 1 and 365 days. When environment is 'prd' or 'mpd', it must be 14 or greater days."
   }
 }
 
@@ -193,7 +193,7 @@ variable "file_soft_delete_retention_days" {
   type        = number
   validation {
     condition     = (var.file_soft_delete_retention_days >= 1 && var.file_soft_delete_retention_days <= 365) && (contains(["prd", "mpd"], lower(var.environment)) ? var.file_soft_delete_retention_days >= 14 : true)
-    error_message = "Must be 1-365 days. For prd/mpd: minimum 14 days required."
+    error_message = "file_soft_delete_retention_days must be between 1 and 365 days. When environment is 'prd' or 'mpd', it must be 14 or greater days."
   }
 }
 
