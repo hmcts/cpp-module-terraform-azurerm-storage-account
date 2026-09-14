@@ -174,7 +174,13 @@ variable "blob_soft_delete_retention_days" {
 }
 
 variable "container_soft_delete_retention_days" {
-  description = "Specifies the number of days that the blob should be retained, between `1` and `365` days. Defaults to `7`"
+  description = "Specifies the number of days that deleted containers are retained, between `1` and `365` days. Defaults to `7`."
+  default     = 7
+  type        = number
+}
+
+variable "file_share_soft_delete_retention_days" {
+  description = "Specifies the number of days that deleted file shares are retained, between `1` and `365` days. Defaults to `7`."
   default     = 7
   type        = number
 }
