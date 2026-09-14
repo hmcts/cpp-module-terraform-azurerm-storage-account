@@ -1,3 +1,11 @@
+locals {
+  is_prd_or_mpd_environment = contains(["prd", "mpd"], lower(var.environment))
+
+  blob_soft_delete_retention_days       = local.is_prd_or_mpd_environment ? max(var.blob_soft_delete_retention_days, 14) : var.blob_soft_delete_retention_days
+  container_soft_delete_retention_days  = local.is_prd_or_mpd_environment ? max(var.container_soft_delete_retention_days, 14) : var.container_soft_delete_retention_days
+  file_share_soft_delete_retention_days = local.is_prd_or_mpd_environment ? max(var.file_share_soft_delete_retention_days, 14) : var.file_share_soft_delete_retention_days
+}
+
 resource "azurerm_storage_account" "main" {
   name                              = var.storage_account_name
   resource_group_name               = var.resource_group_name
@@ -23,10 +31,10 @@ resource "azurerm_storage_account" "main" {
 
   blob_properties {
     delete_retention_policy {
-      days = var.blob_soft_delete_retention_days
+      days = local.blob_soft_delete_retention_days
     }
     container_delete_retention_policy {
-      days = var.container_soft_delete_retention_days
+      days = local.container_soft_delete_retention_days
     }
     versioning_enabled       = var.enable_versioning
     last_access_time_enabled = var.last_access_time_enabled
@@ -35,7 +43,7 @@ resource "azurerm_storage_account" "main" {
 
   share_properties {
     retention_policy {
-      days = var.file_share_soft_delete_retention_days
+      days = local.file_share_soft_delete_retention_days
     }
   }
 }
