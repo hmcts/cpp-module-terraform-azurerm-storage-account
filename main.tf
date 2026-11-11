@@ -46,6 +46,14 @@ resource "azurerm_storage_account" "main" {
       days = local.file_share_soft_delete_retention_days
     }
   }
+
+  lifecycle {
+    # Azure Backup sets the change feed retention when it protects an account
+    # (vaulted backup uses object replication, which needs change feed), and the
+    # value depends on the backup policy. Leave it to Azure so an apply doesn't reset
+    # it. Accounts protected by Azure Backup still need change_feed_enabled = true.
+    ignore_changes = [blob_properties[0].change_feed_retention_in_days]
+  }
 }
 
 resource "azurerm_storage_management_policy" "main" {
