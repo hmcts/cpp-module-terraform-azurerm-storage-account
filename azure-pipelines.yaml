@@ -8,8 +8,9 @@ resources:
     - repository: cppAzureDevOpsTemplates
       type: github
       name: hmcts/cpp-azure-devops-templates
-      ref: 'add-lifecycle-changes'
+      ref: 'main'
       endpoint: "hmcts"
+
 
 extends:
   template: pipelines/terratest.yaml@cppAzureDevOpsTemplates
