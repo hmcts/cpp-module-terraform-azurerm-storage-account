@@ -58,6 +58,7 @@ resource "azurerm_storage_account" "main" {
       blob_properties[0].change_feed_enabled,
       blob_properties[0].change_feed_retention_in_days,
       blob_properties[0].restore_policy,
+      blob_properties[0].delete_retention_policy
     ]
   }
 }
